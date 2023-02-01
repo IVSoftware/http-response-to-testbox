@@ -29,22 +29,33 @@
         private void InitializeComponent()
         {
             this.textBox3 = new System.Windows.Forms.TextBox();
+            this.buttonPost = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // textBox1
+            // textBox3
             // 
-            this.textBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox3.Location = new System.Drawing.Point(0, 0);
-            this.textBox3.Multiline = true;
-            this.textBox3.Name = "textBox1";
-            this.textBox3.Size = new System.Drawing.Size(800, 450);
-            this.textBox3.TabIndex = 0;
+            this.textBox3.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.textBox3.Location = new System.Drawing.Point(110, 44);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.PlaceholderText = " Max age";
+            this.textBox3.Size = new System.Drawing.Size(278, 61);
+            this.textBox3.TabIndex = 1;
+            // 
+            // buttonPost
+            // 
+            this.buttonPost.Location = new System.Drawing.Point(44, 45);
+            this.buttonPost.Name = "buttonPost";
+            this.buttonPost.Size = new System.Drawing.Size(60, 60);
+            this.buttonPost.TabIndex = 0;
+            this.buttonPost.Text = "*";
+            this.buttonPost.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(478, 244);
+            this.Controls.Add(this.buttonPost);
             this.Controls.Add(this.textBox3);
             this.Name = "MainForm";
             this.Text = "Main Form";
@@ -56,5 +67,6 @@
         #endregion
 
         private TextBox textBox3;
+        private Button buttonPost;
     }
 }

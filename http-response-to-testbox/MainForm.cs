@@ -1,49 +1,72 @@
 using System.DirectoryServices.ActiveDirectory;
 using System.Net.Http.Headers;
 using System.Net;
+using System.Web.Http;
+using System.Drawing.Text;
 
 namespace http_response_to_testbox
 {
     public partial class MainForm : Form
     {
-        public MainForm() => InitializeComponent();
-
+        public MainForm()
+        {
+            InitializeComponent();
+            buttonPost.Click += onPost;
+        }
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            const int SQUARE = 60;
-            textBox3.Controls.Add(new Button
-            {
-                Size = new Size(60, 60),
-                Location = new Point(
-                    this.Width - 60,
-                    this.Height - 60
-                )
-            });
-        }
-    }
-    public class CdataController : ApiController
-    {
-        F_Main mainForm = new F_Main();
+            #region G L Y P H
+            var path = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "Fonts",
+                "glyphs.ttf");
+            privateFontCollection.AddFontFile(path);
+            var fontFamily = privateFontCollection.Families[0];
+            Glyphs = new Font(fontFamily, 20F);
+            #endregion G L Y P H
 
-        public async Task<HttpResponseMessage> PostPayloadEventsOp(string SN, string table, string OpStamp)
+            buttonPost.Font = Glyphs;
+            buttonPost.Text = "\uE800";
+            buttonPost.BackColor = Color.Aqua;
+        }
+        public static Font Glyphs { get; private set; }
+        PrivateFontCollection privateFontCollection = new PrivateFontCollection();
+
+        private async void onPost(object? sender, EventArgs e)
         {
-            using (var contentStream = await this.Request.Content.ReadAsStreamAsync())
+            try
             {
-                contentStream.Seek(0, SeekOrigin.Begin);
-                using (var sr = new StreamReader(contentStream))
+                UseWaitCursor = true;
+                buttonPost.BackColor = Color.LightGreen;
+                var response = await _controller.MockPostPayloadEventsOp("38D6FF5-F89C", "records", "Asgard");
+                if((response.Headers != null) && (response.Headers.CacheControl != null))
                 {
-                    string results = sr.ReadToEnd();
-                    mainForm.TextBoxRequestMsg = results;
-                }
+                    textBox3.Text = $"{response.Headers.CacheControl.MaxAge}";
+                }  
             }
-            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent("OK", System.Text.Encoding.UTF8);
-            response.Headers.CacheControl = new CacheControlHeaderValue()
+            finally
             {
-                MaxAge = TimeSpan.FromMinutes(2)
-            };
-            return response;
+                UseWaitCursor = false;
+                Cursor.Position = new Point(Cursor.Position.X + 1, Cursor.Position.Y);
+            }
+        }
+        MockCdataController _controller = new MockCdataController();
+    }
+    public class MockCdataController : ApiController
+    {
+        public async Task<HttpResponseMessage> MockPostPayloadEventsOp(string SN, string table, string OpStamp)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = await client.GetAsync("https://stackoverflow.com/q/75310027/5438626"); 
+                response.Content = new StringContent("OK", System.Text.Encoding.UTF8);
+                response.Headers.CacheControl = new CacheControlHeaderValue()
+                {
+                    MaxAge = TimeSpan.FromMinutes(3.5)
+                };
+                return response;
+            }
         }
     }
 }
