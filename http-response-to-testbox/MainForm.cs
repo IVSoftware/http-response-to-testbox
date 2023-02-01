@@ -63,7 +63,7 @@ namespace http_response_to_testbox
                 response.Content = new StringContent("OK", System.Text.Encoding.UTF8);
                 response.Headers.CacheControl = new CacheControlHeaderValue()
                 {
-                    MaxAge = TimeSpan.FromMinutes(3.5)
+                    MaxAge = TimeSpan.FromMinutes(2)
                 };
                 return response;
             }

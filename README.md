@@ -1,7 +1,6 @@
-Your question states that your goal is to **change textBox.Text control value in Winform** and your code indicates that you want to do this by processing an `HttpResponseMessage`. 
+Your question states that your goal is to **change textBox.Text control value in Winform** and your code indicates that you want to do this by processing an `HttpResponseMessage`. Consider that the `Form` that owns the `textBox3` control could await the response so that it can meaningfully process its content and assign the value to the text box.
 
-It seems to me that the `Form` that has the `textBox3` control might want to await the response so that it can meaningfully process its content and assign the value to the text box.
-
+***
 For a minimal example, mock the API request:
 
     public class MockCdataController : ApiController
@@ -22,15 +21,14 @@ For a minimal example, mock the API request:
     }
 
 ***
-The `Form` that is in posession of `textBox3` could invoke something like this:
+The `Form` that is in possession of `textBox3` could invoke something like this:
 
 
     public partial class MainForm : Form
     {
-        public MainForm() => InitializeComponent();
-        protected override void OnLoad(EventArgs e)
+        public MainForm()
         {
-            base.OnLoad(e);
+            InitializeComponent();
             buttonPost.Click += onPost;
         }
         private async void onPost(object? sender, EventArgs e)
@@ -38,11 +36,11 @@ The `Form` that is in posession of `textBox3` could invoke something like this:
             try
             {
                 UseWaitCursor = true;
+                buttonPost.BackColor = Color.LightGreen;
                 var response = await _controller.MockPostPayloadEventsOp("38D6FF5-F89C", "records", "Asgard");
                 if((response.Headers != null) && (response.Headers.CacheControl != null))
                 {
-                    TimeSpan? maxAge = response.Headers.CacheControl.MaxAge;
-                    textBox3.Text = $"{maxAge}";
+                    textBox3.Text = $"{response.Headers.CacheControl.MaxAge}";
                 }  
             }
             finally
@@ -53,3 +51,8 @@ The `Form` that is in posession of `textBox3` could invoke something like this:
         }
         MockCdataController _controller = new MockCdataController();
     }
+
+[![acquire][1]][1]
+
+
+  [1]: https://i.stack.imgur.com/z2iBt.png
